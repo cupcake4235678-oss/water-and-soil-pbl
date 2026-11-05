@@ -1,0 +1,623 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Water and Soil PBL</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout concept: one long descent. Rain at the surface, then each section is a stratum of the soil profile, ending on bedrock. */
+:root{
+  --deep:#06202c; --sea:#0d4a63; --water:#46c2f0;
+  --ink:#150f0b; --loam:#1f1510; --topsoil:#4a2c19; --subsoil:#8a5429;
+  --parent:#b0a08c; --bedrock:#4d5358;
+  --sun:#f0a23a; --leaf:#6cc551;
+  --text:#f6efe6; --muted:#cbbdad;
+  --display:"Young Serif",Georgia,serif;
+  --body:"DM Sans",system-ui,sans-serif;
+  --mono:"DM Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;overflow-x:hidden}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+section{position:relative;padding-block:clamp(64px,10vw,120px)}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.05;margin:0;text-wrap:balance}
+h2{font-size:clamp(2.4rem,6vw,4.6rem)}
+p{margin:0}
+.pill{display:inline-block;background:var(--sun);color:#26160a;font-weight:700;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;padding:.55em 1.3em;border-radius:99px}
+.eyebrow{font-family:var(--mono);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sun);display:flex;align-items:center;gap:.7em;margin-bottom:1.1rem}
+.eyebrow::before{content:"";width:34px;height:2px;background:currentColor}
+.sun{color:var(--sun)} .leaf{color:var(--leaf)} .water{color:var(--water)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+
+.rv{transform:translateY(30px);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{transform:none}
+
+/* HERO */
+.hero{background:linear-gradient(180deg,var(--deep) 0%,var(--sea) 100%);padding-block:clamp(56px,9vw,110px) clamp(150px,18vw,230px);overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero .wrap{position:relative;z-index:2}
+.hero h1{font-size:clamp(4.2rem,17vw,13rem);letter-spacing:-.03em;margin-top:1.6rem;line-height:.9}
+.hero h1 span{display:block}
+.hero h1 .amp{color:var(--sun);font-style:italic}
+.hero .sub{max-width:34rem;margin-top:2rem;font-size:clamp(1.1rem,2.2vw,1.4rem);color:#d8eef7}
+.hero .sub b{color:#fff}
+.scrollcue{margin-top:2.2rem;display:inline-flex;gap:.8rem;align-items:center;font-family:var(--mono);font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:#d8eef7;text-decoration:none}
+.scrollcue i{display:grid;place-items:center;width:42px;height:42px;border:1.5px solid #d8eef7;border-radius:50%;font-style:normal;animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(7px)}}
+
+/* TICKER */
+.ticker{background:var(--sun);color:#26160a;overflow:hidden;white-space:nowrap;padding-block:.9rem;font-family:var(--display);font-size:clamp(1.2rem,2.6vw,1.8rem)}
+.ticker div{display:inline-flex;gap:2rem;animation:slide 34s linear infinite;padding-right:2rem}
+.ticker span::after{content:"✦";margin-left:2rem;font-size:.7em}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* TEAM */
+.team{background:var(--ink)}
+.members{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:3rem;padding:0;list-style:none}
+.members li{background:var(--loam);border:1px solid #3a281b;border-radius:20px;padding:26px;display:flex;align-items:center;gap:18px;transition:transform .3s,border-color .3s}
+.members li:hover{transform:translateY(-6px) rotate(-1deg);border-color:var(--sun)}
+.members .av{flex:none;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:1.7rem;color:#1a0f08}
+.members li:nth-child(6n+1) .av{background:var(--sun)}
+.members li:nth-child(6n+2) .av{background:var(--leaf)}
+.members li:nth-child(6n+3) .av{background:var(--water)}
+.members li:nth-child(6n+4) .av{background:var(--parent)}
+.members li:nth-child(6n+5) .av{background:var(--sun)}
+.members li:nth-child(6n+6) .av{background:var(--leaf)}
+.members strong{font-family:var(--display);font-weight:400;font-size:1.45rem;display:block;line-height:1.1}
+.members small{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+/* INTRO */
+.intro{background:linear-gradient(180deg,var(--ink),var(--topsoil))}
+.intro .grid{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(32px,6vw,90px);align-items:start}
+.intro .lead{font-family:var(--display);font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.25}
+.intro .lead em{color:var(--water);font-style:normal}
+.intro .lead strong{color:var(--leaf);font-weight:400}
+.intro .body{display:grid;gap:1.4rem;color:var(--muted);font-size:1.08rem}
+.intro .body p:first-child::first-letter{font-family:var(--display);font-size:3.6rem;float:left;line-height:.8;padding:.1em .12em 0 0;color:var(--sun)}
+
+/* PROBLEMS */
+.problems{background:var(--topsoil)}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:3rem}
+.pcard{background:#341e11;border-radius:22px;padding:28px 24px 30px;position:relative;overflow:hidden;min-height:260px;display:flex;flex-direction:column;justify-content:space-between;gap:28px;transition:transform .3s,background .3s}
+.pcard:hover{transform:translateY(-8px);background:#3f2616}
+.pcard svg{width:64px;height:64px;stroke:var(--sun);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pcard h3{font-size:1.55rem;margin-bottom:.5rem}
+.pcard p{color:var(--muted);font-size:1rem;line-height:1.5}
+.pcard .tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--leaf)}
+
+/* GOALS */
+.goals{background:linear-gradient(180deg,var(--topsoil),var(--subsoil));color:#fff}
+.goals .eyebrow{color:#ffe2b4}
+.goal-list{list-style:none;padding:0;margin:3rem 0 0;display:grid;gap:12px;counter-reset:g}
+.goal-list li{counter-increment:g;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;background:rgba(21,15,11,.34);border-radius:18px;padding:20px 26px;font-size:clamp(1.1rem,2.2vw,1.5rem);font-family:var(--display);transition:transform .3s,background .3s}
+.goal-list li:hover{transform:translateX(10px);background:rgba(21,15,11,.55)}
+.goal-list li::before{content:counter(g);display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--leaf);color:#12220c;font-family:var(--mono);font-size:1rem;font-weight:500}
+
+/* THEORY 1 WATER */
+.water-sec{background:linear-gradient(180deg,var(--subsoil) 0,var(--deep) 140px,var(--sea) 100%)}
+.water-sec .eyebrow{color:var(--water)}
+.w-grid{display:grid;grid-template-columns:1fr 360px;gap:clamp(32px,5vw,72px);margin-top:2.6rem;align-items:center}
+.habits{display:grid;gap:12px}
+.habit{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:20px 24px;border-radius:18px;background:rgba(6,32,44,.7);border:2px solid rgba(70,194,240,.3);font-size:1.2rem;transition:all .25s}
+.habit:hover{border-color:var(--water);transform:translateX(6px)}
+.habit:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+.habit .drop{width:34px;height:34px;fill:none;stroke:var(--water);stroke-width:2.2;transition:fill .3s}
+.habit .tick{font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:#9fd6ea}
+.habit[aria-pressed="true"]{background:var(--water);border-color:var(--water);color:#04202c;font-weight:500}
+.habit[aria-pressed="true"] .drop{fill:#04202c;stroke:#04202c}
+.habit[aria-pressed="true"] .tick{color:#04202c}
+.tank-box{text-align:center}
+.tank{position:relative;width:min(100%,260px);height:340px;margin:0 auto;border:3px solid #bfeaf8;border-top-color:transparent;border-radius:0 0 46px 46px;overflow:hidden;background:rgba(255,255,255,.05)}
+.level{position:absolute;left:0;right:0;bottom:0;height:var(--lv,0%);background:linear-gradient(180deg,#5fd0f7,#1a78b5);transition:height 1s cubic-bezier(.3,.8,.3,1)}
+.level::before{content:"";position:absolute;left:0;right:0;top:-18px;height:20px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='20' viewBox='0 0 120 20'%3E%3Cpath d='M0 10 Q30 0 60 10 T120 10 V20 H0Z' fill='%235fd0f7'/%3E%3C/svg%3E") repeat-x;background-size:120px 20px;animation:wave 3s linear infinite;opacity:var(--wv,0)}
+@keyframes wave{to{background-position-x:120px}}
+.tank-pct{font-family:var(--display);font-size:3.4rem;margin-top:1.2rem;line-height:1}
+.tank-box p{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:#bfeaf8;margin-top:.5rem}
+.w-note{margin-top:2.4rem;font-family:var(--display);font-size:clamp(1.3rem,2.6vw,1.9rem);max-width:40rem;color:#e4f6fc}
+
+/* THEORY 2 SOIL */
+.soil-sec{background:var(--ink);padding-bottom:0}
+.soil-head{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:end;margin-bottom:3rem}
+.soil-head p{color:var(--muted);font-size:1.1rem}
+.four{display:flex;align-items:center;gap:20px;margin-top:1.6rem}
+.four b{font-family:var(--display);font-size:5.5rem;line-height:1;color:var(--sun);font-weight:400}
+.four span{font-size:1rem;color:var(--muted)}
+.four span strong{color:#fff;display:block}
+.strata{position:relative;margin-top:0}
+.grass{height:70px;background:var(--leaf);position:relative;margin-top:50px}
+.grass svg{position:absolute;bottom:100%;left:0;width:100%;height:60px;display:block}
+.layer{position:relative;overflow:hidden;padding:clamp(28px,4vw,48px) 0;border-top:6px solid var(--ink);transition:padding .4s}
+.layer .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px}
+.layer small{font-family:var(--mono);font-weight:500;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+.layer h3{font-size:clamp(2.2rem,5.5vw,4rem);margin:.2em 0 .15em}
+.layer p{font-size:clamp(1.05rem,2vw,1.3rem);max-width:34rem}
+.layer .num{font-family:var(--display);font-size:clamp(5rem,16vw,12rem);line-height:.8;opacity:.18}
+.layer .peb{position:absolute;border-radius:50%;opacity:.85}
+.layer:hover{padding-block:clamp(40px,6vw,72px)}
+.l-a{background:var(--topsoil);color:#fff} .l-a small{color:var(--leaf)}
+.l-b{background:var(--subsoil);color:#fff} .l-b small{color:#ffe2b4}
+.l-c{background:var(--parent);color:#25180f}
+.l-r{background:var(--bedrock);color:#f1f3f4}
+.soil-note{background:var(--bedrock);color:#e9edef;padding-block:0 clamp(48px,8vw,90px)}
+.soil-note p{font-family:var(--display);font-size:clamp(1.3rem,2.6vw,1.9rem);max-width:42rem}
+
+/* DISCUSSION */
+.disc{background:var(--bedrock);padding-top:clamp(40px,6vw,70px)}
+.disc .eyebrow{color:#ffd08a}
+.disc-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:3rem}
+.dcard{grid-column:span 2;background:#1c2125;border-radius:22px;padding:30px 28px;font-size:1.1rem;line-height:1.5;display:flex;flex-direction:column;gap:18px;transition:transform .3s,background .3s}
+.dcard:nth-child(4),.dcard:nth-child(5){grid-column:span 3}
+.dcard:hover{transform:translateY(-6px);background:#242b30}
+.dcard span{font-family:var(--mono);font-size:.75rem;letter-spacing:.14em;color:var(--leaf);text-transform:uppercase}
+
+/* CONCLUSION */
+.concl{background:linear-gradient(180deg,var(--bedrock),#1b1f22)}
+.concl .big{font-family:var(--display);font-size:clamp(2.2rem,6.4vw,5.4rem);line-height:1.06;max-width:16em;text-wrap:balance}
+.concl .big em{font-style:normal;color:var(--sun)}
+.concl .big u{text-decoration:none;color:var(--leaf)}
+.cpoints{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:4rem}
+.cpoint{border-top:3px solid var(--sun);padding-top:20px;color:#dfe3e6;font-size:1.1rem}
+.cpoint:nth-child(2){border-color:var(--leaf)}
+.cpoint:nth-child(3){border-color:var(--water)}
+
+/* THANKS */
+.thanks{background:#14171a;text-align:center;overflow:hidden;padding-block:clamp(90px,14vw,180px)}
+.thanks h2{font-size:clamp(4rem,16vw,12rem);letter-spacing:-.03em;line-height:.9}
+.thanks h2 span:first-child{color:var(--water)}
+.thanks h2 span:last-child{color:var(--leaf)}
+.thanks p{margin-top:2rem;font-family:var(--mono);font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.drops{position:absolute;inset:0;pointer-events:none}
+.drops i{position:absolute;top:-30px;width:12px;height:18px;background:var(--water);border-radius:50% 50% 50% 50%/62% 62% 38% 38%;opacity:.5;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(110vh)}}
+.thanks .wrap{position:relative}
+
+
+/* QUIZ */
+.quiz{overflow:hidden;background:radial-gradient(900px 500px at 80% 0%,rgba(240,162,58,.16),transparent 70%),linear-gradient(180deg,#1b1f22,#14171a)}
+.quiz .eyebrow{color:var(--sun)}
+.qlead{margin-top:1.2rem;max-width:34rem;color:var(--muted);font-size:1.15rem}
+.qcard{margin-top:2.6rem;background:#2b1b11;border:1px solid #4a2c19;border-radius:28px;padding:clamp(22px,4vw,52px);box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.qcard label{display:block;font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sun);margin-bottom:.7rem}
+.qcard input{width:100%;max-width:26rem;font:inherit;font-size:1.2rem;color:var(--text);background:#150f0b;border:2px solid #5a3a24;border-radius:14px;padding:.85em 1.1em;display:block;margin-bottom:1.4rem}
+.qcard input:focus{outline:none;border-color:var(--sun)}
+.qbtn{font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;color:#26160a;background:var(--sun);border:0;border-radius:99px;padding:.9em 2em;transition:transform .2s,box-shadow .2s}
+.qbtn:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(240,162,58,.35)}
+.qbtn.ghost{background:transparent;color:var(--text);border:2px solid #7a5a40;margin-top:1.6rem}
+.qtop{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:1.6rem}
+.qtop span{font-family:var(--mono);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--leaf)}
+.qdots{display:flex;gap:8px}
+.qdots i{width:34px;height:8px;border-radius:99px;background:#4a2c19;transition:background .3s}
+.qdots i.on{background:var(--sun)} .qdots i.ok{background:var(--leaf)} .qdots i.no{background:#d9604c}
+#qtext{font-size:clamp(1.7rem,4vw,2.7rem);margin-bottom:1.8rem;outline:none}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.qopt{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;background:#150f0b;border:2px solid #4a2c19;border-radius:18px;padding:18px 20px;font-size:1.12rem;line-height:1.35;transition:transform .2s,border-color .2s,background .2s}
+.qopt:hover:not([disabled]){border-color:var(--sun);transform:translateY(-3px)}
+.qopt:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+.qopt b{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#4a2c19;color:var(--sun);font-family:var(--mono);font-weight:500;font-size:.95rem}
+.qopt[disabled]{cursor:default}
+.qopt.right{background:#16361a;border-color:var(--leaf)} .qopt.right b{background:var(--leaf);color:#12220c}
+.qopt.wrong{background:#3a1713;border-color:#d9604c} .qopt.wrong b{background:#d9604c;color:#fff}
+.qfb{margin-top:1.6rem;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:rgba(255,255,255,.05);border-radius:18px;padding:18px 22px}
+.qfb p{flex:1 1 20rem;font-size:1.08rem}
+.res{position:relative;display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:clamp(24px,5vw,64px);align-items:center}
+.res canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.cupbox{text-align:center;position:relative}
+.cupbox svg{width:min(100%,320px);height:auto;display:block;margin:0 auto;filter:drop-shadow(0 18px 30px rgba(0,0,0,.5));animation:pop .9s cubic-bezier(.2,1.4,.3,1) both}
+@keyframes pop{from{transform:scale(.3) rotate(-8deg)}}
+.cupbox .rays{position:absolute;left:50%;top:38%;width:130%;aspect-ratio:1;transform:translate(-50%,-50%);background:conic-gradient(from 0deg,rgba(255,215,106,.18),transparent 12%,rgba(255,215,106,.18) 25%,transparent 37%,rgba(255,215,106,.18) 50%,transparent 62%,rgba(255,215,106,.18) 75%,transparent 87%,rgba(255,215,106,.18));border-radius:50%;-webkit-mask:radial-gradient(circle,#000 20%,transparent 68%);mask:radial-gradient(circle,#000 20%,transparent 68%);animation:spin 40s linear infinite;z-index:0}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.cupbox svg,.awardee{position:relative;z-index:1}
+.awardee{margin-top:1rem;color:var(--muted);font-size:1rem}
+.awardee b{display:block;font-family:var(--display);font-weight:400;font-size:1.6rem;color:var(--text);overflow-wrap:anywhere}
+.score .big{display:flex;align-items:baseline;gap:12px}
+.score .big b{font-family:var(--display);font-weight:400;font-size:clamp(5rem,14vw,9rem);line-height:.9;color:var(--sun)}
+.score .big span{font-family:var(--display);font-size:2rem;color:var(--muted)}
+.score h3{font-size:clamp(1.8rem,4vw,2.6rem);margin-top:.5rem;outline:none}
+.score>p{margin-top:.7rem;color:var(--muted);font-size:1.1rem;max-width:30rem}
+.review{list-style:none;padding:0;margin:1.4rem 0 0;display:grid;gap:8px}
+.review li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;font-size:.98rem;line-height:1.4;background:rgba(0,0,0,.25);border-radius:12px;padding:10px 14px}
+.review li i{font-style:normal;font-weight:700;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.85rem}
+.review li.ok i{background:var(--leaf);color:#12220c} .review li.no i{background:#d9604c;color:#fff}
+.review small{display:block;color:var(--muted)}
+@media (max-width:900px){.res{grid-template-columns:1fr}}
+@media (max-width:620px){.qopts{grid-template-columns:1fr}.qdots i{width:22px}}
+
+/* DEPTH NAV */
+.nav{position:fixed;right:max(14px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:6px}
+.nav a{display:flex;align-items:center;justify-content:flex-end;gap:10px;text-decoration:none;color:#fff;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 0}
+.nav a span{opacity:0;transform:translateX(8px);transition:.25s;background:rgba(10,8,6,.85);padding:3px 9px;border-radius:99px;white-space:nowrap}
+.nav a i{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.35);border:2px solid rgba(0,0,0,.4);transition:.25s}
+.nav a:hover span,.nav a:focus-visible span,.nav a.on span{opacity:1;transform:none}
+.nav a.on i{background:var(--sun);transform:scale(1.5)}
+.prog{position:fixed;left:0;top:0;height:5px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--water),var(--leaf),var(--sun));z-index:30}
+
+@media (max-width:1000px){
+  .nav{display:none}
+  .pgrid{grid-template-columns:repeat(2,1fr)}
+  .w-grid,.soil-head,.intro .grid{grid-template-columns:1fr}
+  .members{grid-template-columns:repeat(2,1fr)}
+  .cpoints{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .members,.pgrid{grid-template-columns:1fr}
+  .disc-grid{grid-template-columns:1fr}
+  .dcard,.dcard:nth-child(4),.dcard:nth-child(5){grid-column:auto}
+  .layer .wrap{grid-template-columns:1fr}
+  .layer .num{display:none}
+  .habit{grid-template-columns:auto 1fr;padding:16px 18px}
+  .habit .tick{display:none}
+  .tank{height:280px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .rv{transform:none}
+}
+</style>
+
+<div class="prog" id="prog"></div>
+<nav class="nav" id="nav" aria-label="Sections"></nav>
+
+<header class="hero" id="top" data-nav="Surface">
+  <canvas id="rain" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <span class="pill">Project-Based Learning (PBL)</span>
+    <h1><span>Water</span><span><em class="amp">&amp;</em> Soil</span></h1>
+    <p class="sub">Topic: <b>water conservation</b>, soil profile and layers of soil.</p>
+    <a class="scrollcue" href="#team"><i>↓</i> Scroll to dig in</a>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true"><div id="tick"></div></div>
+
+<section class="team" id="team" data-nav="Team">
+  <div class="wrap">
+    <div class="eyebrow">Who made this</div>
+    <h2 class="rv">Team <span class="sun">Members</span></h2>
+    <ul class="members">
+      <li class="rv"><span class="av">P</span><div><strong>Priyanshi</strong><small>Team member</small></div></li>
+      <li class="rv"><span class="av">A</span><div><strong>Ananya</strong><small>Team member</small></div></li>
+      <li class="rv"><span class="av">H</span><div><strong>Havisha</strong><small>Team member</small></div></li>
+      <li class="rv"><span class="av">S</span><div><strong>Sri Vasavi</strong><small>Team member</small></div></li>
+      <li class="rv"><span class="av">S</span><div><strong>Sharanya</strong><small>Team member</small></div></li>
+      <li class="rv"><span class="av">P</span><div><strong>Parinika</strong><small>Team member</small></div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="intro" id="intro" data-nav="Introduction">
+  <div class="wrap">
+    <div class="eyebrow">Introduction</div>
+    <div class="grid">
+      <p class="lead rv"><em>Water</em> and <strong>soil</strong> are essential natural resources that support life on Earth.</p>
+      <div class="body rv">
+        <p>Water is needed for drinking and farming, while soil helps plants grow.</p>
+        <p>Water conservation means saving water and using it wisely. Understanding soil layers helps us learn how soil supports plant life.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="problems" id="problems" data-nav="Problems">
+  <div class="wrap">
+    <div class="eyebrow">What is going wrong</div>
+    <h2 class="rv">Four <span class="sun">Problems</span></h2>
+    <div class="pgrid">
+      <article class="pcard rv">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6C32 6 14 28 14 40a18 18 0 0 0 36 0C50 28 32 6 32 6Z"/><path d="M22 42l20 0" stroke-dasharray="2 6"/></svg>
+        <div><span class="tag">Problem 1</span><h3>Water wastage</h3><p>Water wastage reduces the availability of freshwater.</p></div>
+      </article>
+      <article class="pcard rv">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6C32 6 14 28 14 40a18 18 0 0 0 36 0C50 28 32 6 32 6Z"/><path d="M25 35l14 14M39 35L25 49"/></svg>
+        <div><span class="tag">Problem 2</span><h3>Water pollution</h3><p>Water pollution makes water unsafe for living things.</p></div>
+      </article>
+      <article class="pcard rv">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 18c14 0 20 14 26 20s14 10 26 10"/><path d="M6 32c10 0 14 8 20 14s12 8 32 8"/><path d="M10 56h44"/></svg>
+        <div><span class="tag">Problem 3</span><h3>Soil erosion</h3><p>Soil erosion removes the fertile top layer of soil.</p></div>
+      </article>
+      <article class="pcard rv">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M20 30h24l-4 22H24Z"/><path d="M14 22c4-10 16-12 18-12s14 2 18 12c-6-3-12-3-18-3s-12 0-18 3Z"/><path d="M12 56h40"/></svg>
+        <div><span class="tag">Problem 4</span><h3>Deforestation</h3><p>Deforestation reduces soil protection and fertility.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="goals" id="goals" data-nav="Goals">
+  <div class="wrap">
+    <div class="eyebrow">What we set out to do</div>
+    <h2 class="rv">Our <span style="color:#12220c;background:var(--leaf);padding:0 .18em;border-radius:12px">Goals</span></h2>
+    <ol class="goal-list">
+      <li class="rv">To understand the importance of water conservation.</li>
+      <li class="rv">To learn simple ways to save water.</li>
+      <li class="rv">To identify the different layers of soil.</li>
+      <li class="rv">To understand the causes of soil erosion.</li>
+      <li class="rv">To learn methods of soil conservation.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="water-sec" id="water" data-nav="Theory 1">
+  <div class="wrap">
+    <div class="eyebrow">Theory 1</div>
+    <h2 class="rv">Water <span class="water">Conservation</span></h2>
+    <div class="w-grid">
+      <div>
+        <p style="color:#bfeaf8;font-family:var(--mono);font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1rem">Methods of conservation · tap each to fill the tank</p>
+        <div class="habits" id="habits">
+          <button class="habit" aria-pressed="false"><svg class="drop" viewBox="0 0 24 24"><path d="M12 2S5 10 5 15a7 7 0 0 0 14 0C19 10 12 2 12 2Z"/></svg><span>Rainwater harvesting.</span><span class="tick">Tap</span></button>
+          <button class="habit" aria-pressed="false"><svg class="drop" viewBox="0 0 24 24"><path d="M12 2S5 10 5 15a7 7 0 0 0 14 0C19 10 12 2 12 2Z"/></svg><span>Repairing leaking taps and pipes.</span><span class="tick">Tap</span></button>
+          <button class="habit" aria-pressed="false"><svg class="drop" viewBox="0 0 24 24"><path d="M12 2S5 10 5 15a7 7 0 0 0 14 0C19 10 12 2 12 2Z"/></svg><span>Turning off taps when not in use.</span><span class="tick">Tap</span></button>
+          <button class="habit" aria-pressed="false"><svg class="drop" viewBox="0 0 24 24"><path d="M12 2S5 10 5 15a7 7 0 0 0 14 0C19 10 12 2 12 2Z"/></svg><span>Reusing suitable water for gardening.</span><span class="tick">Tap</span></button>
+        </div>
+      </div>
+      <div class="tank-box">
+        <div class="tank" id="tank"><div class="level"></div></div>
+        <div class="tank-pct" id="pct">0 / 4</div>
+        <p>Methods adopted</p>
+      </div>
+    </div>
+    <p class="w-note rv">These methods help preserve water and ensure its availability in the future.</p>
+  </div>
+</section>
+
+<section class="soil-sec" id="soil" data-nav="Theory 2">
+  <div class="wrap">
+    <div class="eyebrow">Theory 2</div>
+    <div class="soil-head">
+      <h2 class="rv">Soil Profile <span class="sun">&amp;</span> <span class="leaf">Layers</span></h2>
+      <div class="rv">
+        <p>Each layer has different properties and plays an important role in the formation of soil.</p>
+        <div class="four"><b>4</b><span><strong>distinct layers,</strong>from the surface down to solid rock</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="strata">
+    <div class="grass"><svg id="blades" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+    <div class="layer l-a" data-pebbles="#2e1a0d,#6b4429">
+      <div class="wrap"><div><small>Horizon A</small><h3>Topsoil</h3><p>Rich in humus and nutrients; supports plant growth.</p></div><div class="num">01</div></div>
+    </div>
+    <div class="layer l-b" data-pebbles="#5e3818,#c58a4a">
+      <div class="wrap"><div><small>Horizon B</small><h3>Subsoil</h3><p>Contains minerals and clay.</p></div><div class="num">02</div></div>
+    </div>
+    <div class="layer l-c" data-pebbles="#e6dac9,#7d6e5c">
+      <div class="wrap"><div><small>Horizon C</small><h3>Parent Material</h3><p>Contains partly weathered rocks.</p></div><div class="num">03</div></div>
+    </div>
+    <div class="layer l-r" data-pebbles="#2d3236,#8b9399">
+      <div class="wrap"><div><small>Horizon R</small><h3>Bedrock</h3><p>The hard rock beneath the soil.</p></div><div class="num">04</div></div>
+    </div>
+  </div>
+  <div class="soil-note"></div>
+</section>
+
+<section class="disc" id="discussion" data-nav="Discussion">
+  <div class="wrap">
+    <div class="eyebrow">What we learned</div>
+    <h2 class="rv">Discussion</h2>
+    <div class="disc-grid">
+      <div class="dcard rv"><span>Learning 1</span>Through this project, we learned that water and soil are essential for all living things.</div>
+      <div class="dcard rv"><span>Learning 2</span>We learned different methods of water conservation, such as rainwater harvesting.</div>
+      <div class="dcard rv"><span>Learning 3</span>We understood the importance of the different layers of soil.</div>
+      <div class="dcard rv"><span>Learning 4</span>We learned how trees help prevent soil erosion.</div>
+      <div class="dcard rv"><span>Learning 5</span>We understood that protecting water and soil helps maintain a healthy environment.</div>
+    </div>
+  </div>
+</section>
+
+<section class="concl" id="conclusions" data-nav="Conclusions">
+  <div class="wrap">
+    <div class="eyebrow">Conclusions</div>
+    <p class="big rv">Water and soil are valuable natural resources that <em>we must protect.</em></p>
+    <div class="cpoints">
+      <p class="cpoint rv">Saving water and preventing soil erosion help maintain a healthy environment.</p>
+      <p class="cpoint rv">We should avoid wasting water, plant trees, and protect fertile soil.</p>
+      <p class="cpoint rv">By taking small steps today, we can ensure a better future for the next generations.</p>
+    </div>
+  </div>
+</section>
+
+<section class="quiz" id="quiz" data-nav="Parents quiz">
+  <div class="wrap">
+    <div class="eyebrow">For parents</div>
+    <h2 class="rv">Parents' <span class="sun">Quiz</span></h2>
+    <p class="qlead rv">Five quick questions from our project. Finish the quiz to see your score and collect your cup.</p>
+    <div class="qcard rv" id="qcard">
+      <div id="qstart">
+        <label for="qname">Your name (shown on your cup)</label>
+        <input id="qname" type="text" maxlength="28" placeholder="For example, Mrs. Sharma" autocomplete="off">
+        <button class="qbtn" id="qgo" type="button">Start the quiz</button>
+      </div>
+      <div id="qplay" hidden>
+        <div class="qtop"><span id="qcount"></span><div class="qdots" id="qdots"></div></div>
+        <h3 id="qtext" tabindex="-1"></h3>
+        <div class="qopts" id="qopts"></div>
+        <div class="qfb" id="qfb" hidden><p id="qwhy"></p><button class="qbtn" id="qnext" type="button">Next question</button></div>
+      </div>
+      <div id="qres" hidden>
+        <div class="res">
+          <canvas id="conf" aria-hidden="true"></canvas>
+          <div class="cupbox">
+            <div class="rays" aria-hidden="true"></div>
+            <svg id="cup" viewBox="0 0 300 330" role="img" aria-label="Champion cup">
+              <defs>
+                <linearGradient id="cg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--c2)"/><stop offset=".4" style="stop-color:var(--c1)"/><stop offset=".65" style="stop-color:var(--c3)"/><stop offset="1" style="stop-color:var(--c2)"/></linearGradient>
+                <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--c1)"/><stop offset="1" style="stop-color:var(--c2)"/></linearGradient>
+              </defs>
+              <path d="M84 70C40 68 34 118 92 140" fill="none" style="stroke:var(--c1)" stroke-width="8" stroke-linecap="round" opacity=".9"/>
+              <path d="M216 70C260 68 266 118 208 140" fill="none" style="stroke:var(--c1)" stroke-width="8" stroke-linecap="round" opacity=".9"/>
+              <path d="M76 52H224C224 128 196 182 150 186C104 182 76 128 76 52Z" fill="url(#cg)"/>
+              <ellipse cx="150" cy="52" rx="74" ry="9" style="fill:var(--c3)"/>
+              <ellipse cx="150" cy="52" rx="64" ry="5" fill="#120a05" opacity=".35"/>
+              <path d="M94 74C94 118 106 156 128 172" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".35"/>
+              <circle cx="150" cy="112" r="24" fill="none" style="stroke:var(--c3)" stroke-width="2.5" opacity=".9"/>
+              <polygon points="150,96 155,108 168,109 158,117 162,130 150,122 138,130 142,117 132,109 145,108" style="fill:var(--c3)"/>
+              <rect x="140" y="186" width="20" height="36" fill="url(#cg)"/>
+              <path d="M104 226H196L204 244H96Z" fill="url(#bg)"/>
+              <rect x="82" y="244" width="136" height="16" rx="8" style="fill:var(--c2)"/>
+              <rect x="92" y="270" width="116" height="42" rx="12" fill="#0d0907" opacity=".85"/>
+              <rect x="92" y="270" width="116" height="42" rx="12" fill="none" style="stroke:var(--c1)" stroke-width="1.5" opacity=".8"/>
+              <text id="plate" x="150" y="298" text-anchor="middle" style="fill:var(--c1)" font-family="Cambria,Georgia,serif" font-weight="700" font-size="20" letter-spacing="2">5 / 5</text>
+            </svg>
+            <p class="awardee">Awarded to<b id="rname"></b></p>
+          </div>
+          <div class="score">
+            <div class="big"><b id="rscore">0</b><span>/ 5</span></div>
+            <h3 id="rtitle" tabindex="-1"></h3>
+            <p id="rmsg"></p>
+            <ul class="review" id="review"></ul>
+            <button class="qbtn ghost" id="qagain" type="button">Take the quiz again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="thanks" id="thanks" data-nav="Thank you">
+  <div class="drops" id="drops" aria-hidden="true"></div>
+  <div class="wrap">
+    <h2 class="rv"><span>Thank</span> <span>You</span></h2>
+    <p>Priyanshi · Ananya · Havisha · Sri Vasavi · Sharanya · Parinika</p>
+  </div>
+</section>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ticker */
+  var words=['Rainwater harvesting','Topsoil','Subsoil','Parent material','Bedrock','Soil conservation','Plant trees','Save every drop','Humus','Water conservation'];
+  var t=document.getElementById('tick'),h='';
+  for(var k=0;k<2;k++)words.forEach(function(w){h+='<span>'+w+'</span>'});
+  t.innerHTML=h;
+
+  /* grass blades under strata */
+  var b=document.getElementById('blades'),p='',x=0,seed=7;
+  function rnd(){seed=(seed*9301+49297)%233280;return seed/233280}
+  var cols=['#4fae3a','#6cc551','#86d968','#3f9a30'];
+  while(x<1200){var w=8+rnd()*10,hh=24+rnd()*34;
+    p+='<path d="M'+x+' 60 L'+(x+w/2+(rnd()-.5)*6)+' '+(60-hh)+' L'+(x+w)+' 60Z" fill="'+cols[Math.floor(rnd()*4)]+'"/>';x+=w*.8}
+  b.innerHTML=p;
+
+  /* pebbles */
+  document.querySelectorAll('.layer').forEach(function(l){
+    var c=l.dataset.pebbles.split(',');
+    for(var i=0;i<16;i++){var d=document.createElement('i');d.className='peb';
+      var s=5+rnd()*18;d.style.cssText='width:'+s+'px;height:'+s+'px;left:'+(rnd()*100)+'%;top:'+(rnd()*85)+'%;background:'+c[i%2]+';opacity:'+(.35+rnd()*.5);
+      l.appendChild(d)}
+  });
+
+  /* reveal */
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
+  document.querySelectorAll('.rv').forEach(function(el,i){el.style.transitionDelay=(i%3)*90+'ms';io.observe(el)});
+
+  /* habits tank */
+  var hs=document.querySelectorAll('.habit'),tank=document.getElementById('tank'),pct=document.getElementById('pct');
+  hs.forEach(function(bt){bt.addEventListener('click',function(){
+    bt.setAttribute('aria-pressed',bt.getAttribute('aria-pressed')==='true'?'false':'true');
+    var n=document.querySelectorAll('.habit[aria-pressed="true"]').length;
+    tank.style.setProperty('--lv',(n*25)+'%');tank.style.setProperty('--wv',n?1:0);
+    pct.textContent=n+' / 4';
+  })});
+
+  /* parents quiz */
+  var Q=[
+    {q:'Which soil layer is rich in humus and nutrients and supports plant growth?',o:['Bedrock','Topsoil','Subsoil','Parent material'],a:1,w:'Topsoil is rich in humus and nutrients, so plants grow best in it.'},
+    {q:'Which of these is a method of water conservation?',o:['Letting taps run while brushing','Rainwater harvesting','Ignoring leaking pipes','Washing the car daily with a hose'],a:1,w:'Rainwater harvesting saves water so it is available in the future.'},
+    {q:'What does soil erosion take away?',o:['The fertile top layer of soil','Only the rocks underground','The hard bedrock','The water in the sky'],a:0,w:'Soil erosion removes the fertile top layer of soil.'},
+    {q:'How do trees help the soil?',o:['They use up all the water','They turn soil into rock','They help prevent soil erosion','They remove the topsoil'],a:2,w:'Trees protect the soil. Deforestation reduces soil protection and fertility.'},
+    {q:'What is the hard rock beneath the soil called?',o:['Subsoil','Humus','Parent material','Bedrock'],a:3,w:'Bedrock, also called Horizon R, is the hard rock beneath the soil.'}
+  ];
+  var qi=0,score=0,answers=[],qd=document.getElementById('qdots');
+  function $(id){return document.getElementById(id)}
+  function show(id){['qstart','qplay','qres'].forEach(function(x){$(x).hidden=(x!==id)})}
+  function drawQ(){
+    var q=Q[qi];$('qcount').textContent='Question '+(qi+1)+' of '+Q.length;
+    qd.innerHTML='';Q.forEach(function(_,i){var d=document.createElement('i');d.className=i<qi?(answers[i]?'ok':'no'):(i===qi?'on':'');qd.appendChild(d)});
+    $('qtext').textContent=q.q;$('qfb').hidden=true;
+    var box=$('qopts');box.innerHTML='';
+    q.o.forEach(function(t,i){var b=document.createElement('button');b.type='button';b.className='qopt';
+      b.innerHTML='<b>'+'ABCD'.charAt(i)+'</b><span></span>';b.lastChild.textContent=t;
+      b.addEventListener('click',function(){pick(i)});box.appendChild(b)});
+    $('qnext').textContent=(qi===Q.length-1)?'See my cup':'Next question';
+  }
+  function pick(i){
+    var q=Q[qi],ok=(i===q.a);answers[qi]=ok;if(ok)score++;
+    [].forEach.call($('qopts').children,function(b,k){b.disabled=true;if(k===q.a)b.classList.add('right');else if(k===i)b.classList.add('wrong')});
+    qd.children[qi].className=ok?'ok':'no';
+    $('qwhy').textContent=(ok?'Correct. ':'Not quite. ')+q.w;
+    $('qfb').hidden=false;$('qnext').focus();
+  }
+  var cups={gold:['#ffd76a','#c8861f','#fff6cf','#3a2410'],silver:['#eef2f5','#8f9aa3','#ffffff','#2a3238'],bronze:['#e8a878','#9a5528','#ffe3c9','#3a2010']};
+  function finish(){
+    var nm=($('qname').value||'').trim()||'Responsible Parent';
+    var tier=score>=4?'gold':(score===3?'silver':'bronze'),c=cups[tier],cup=$('cup');
+    cup.style.setProperty('--c1',c[0]);cup.style.setProperty('--c2',c[1]);cup.style.setProperty('--c3',c[2]);cup.style.setProperty('--c4',c[3]);
+    $('plate').textContent=score+' / '+Q.length;
+    $('rname').textContent=nm;$('rscore').textContent=score;
+    var T=[['Good start!','Every responsible citizen starts somewhere. Look through the slides above and try again.'],['Good start!','Every responsible citizen starts somewhere. Look through the slides above and try again.'],['Good start!','Every responsible citizen starts somewhere. Look through the slides above and try again.'],['Well done!','You know your water and soil. One more read of the slides could get you to the top.'],['Excellent!','Only one slip. You clearly care about protecting water and soil.'],['Perfect score!','A true champion. Water and soil are safe in your hands.']];
+    $('rtitle').textContent=T[score][0];$('rmsg').textContent=T[score][1];
+    var ul=$('review');ul.innerHTML='';
+    Q.forEach(function(q,i){var li=document.createElement('li');li.className=answers[i]?'ok':'no';
+      li.innerHTML='<i>'+(answers[i]?'✓':'✗')+'</i><div><span></span><small></small></div>';
+      li.querySelector('span').textContent=q.q;
+      li.querySelector('small').textContent=answers[i]?'Correct':'Answer: '+q.o[q.a];ul.appendChild(li)});
+    show('qres');$('rtitle').focus({preventScroll:true});
+    $('qcard').scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'});
+    if(!reduce)confetti();
+  }
+  function confetti(){
+    var cv=$('conf'),x=cv.getContext('2d'),r=cv.getBoundingClientRect(),W=cv.width=r.width,H=cv.height=r.height,P=[],cl=['#ff9933','#ffffff','#138808','#f0a23a','#46c2f0','#6cc551'];
+    for(var i=0;i<140;i++)P.push({x:W*(.2+Math.random()*.6),y:H*.25,vx:(Math.random()-.5)*10,vy:-Math.random()*11-2,s:5+Math.random()*7,c:cl[i%6],r:Math.random()*6,vr:(Math.random()-.5)*.4});
+    var t0=performance.now();
+    (function f(t){var e=t-t0;x.clearRect(0,0,W,H);
+      P.forEach(function(p){p.vy+=.28;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.globalAlpha=Math.max(0,1-e/4200);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});
+      if(e<4200)requestAnimationFrame(f);else x.clearRect(0,0,W,H)})(t0);
+  }
+  $('qgo').addEventListener('click',function(){qi=0;score=0;answers=[];show('qplay');drawQ();$('qtext').focus({preventScroll:true})});
+  $('qname').addEventListener('keydown',function(e){if(e.key==='Enter')$('qgo').click()});
+  $('qnext').addEventListener('click',function(){if(qi<Q.length-1){qi++;drawQ();$('qtext').focus({preventScroll:true})}else finish()});
+  $('qagain').addEventListener('click',function(){show('qstart');$('qname').focus({preventScroll:true})});
+
+  /* depth nav */
+  var secs=[].slice.call(document.querySelectorAll('[data-nav]')),nav=document.getElementById('nav');
+  secs.forEach(function(s){var a=document.createElement('a');a.href='#'+s.id;a.innerHTML='<span>'+s.dataset.nav+'</span><i></i>';nav.appendChild(a);s._a=a});
+  var prog=document.getElementById('prog');
+  function onS(){
+    var d=document.documentElement,m=d.scrollHeight-innerHeight;
+    prog.style.transform='scaleX('+(m>0?scrollY/m:0)+')';
+    var cur=secs[0];secs.forEach(function(s){if(s.getBoundingClientRect().top<innerHeight*.45)cur=s});
+    secs.forEach(function(s){s._a.classList.toggle('on',s===cur)});
+  }
+  addEventListener('scroll',onS,{passive:true});onS();
+
+  /* falling drops in footer */
+  var dr=document.getElementById('drops');
+  for(var i=0;i<22;i++){var e=document.createElement('i');
+    e.style.cssText='left:'+(rnd()*100)+'%;animation-duration:'+(5+rnd()*7)+'s;animation-delay:-'+(rnd()*10)+'s;transform:scale('+(.6+rnd()*.9)+')';dr.appendChild(e)}
+
+  /* hero rain + grass */
+  var cv=document.getElementById('rain'),cx=cv.getContext('2d'),W,H,drops=[],rip=[],blades=[],dpr=Math.min(devicePixelRatio||1,2);
+  function size(){var r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+    var n=Math.round(W/9);blades=[];for(var i=0;i<n;i++)blades.push({x:i*(W/n)+rnd()*6,h:26+rnd()*46,w:7+rnd()*8,c:cols[i%4],ph:rnd()*6});
+    var dn=Math.round(W/22);drops=[];for(var j=0;j<dn;j++)drops.push({x:rnd()*W,y:rnd()*H,v:5+rnd()*5,l:10+rnd()*14})}
+  function frame(ts){
+    cx.clearRect(0,0,W,H);var gy=H-40;
+    cx.strokeStyle='rgba(160,225,250,.75)';cx.lineWidth=2;cx.lineCap='round';
+    drops.forEach(function(d){
+      if(!reduce){d.y+=d.v;if(d.y>gy-18){rip.push({x:d.x,y:gy-6,r:2,a:.7});d.y=-20;d.x=rnd()*W}}
+      cx.beginPath();cx.moveTo(d.x,d.y);cx.lineTo(d.x-1.5,d.y+d.l);cx.stroke()});
+    rip=rip.filter(function(r){return r.a>0});
+    rip.forEach(function(r){r.r+=.7;r.a-=.02;cx.strokeStyle='rgba(190,235,250,'+r.a+')';cx.lineWidth=1.5;cx.beginPath();cx.ellipse(r.x,r.y,r.r*2.2,r.r*.7,0,0,6.28);cx.stroke()});
+    cx.fillStyle='#3d9a2e';cx.fillRect(0,gy+4,W,40);
+    blades.forEach(function(g){var sw=reduce?0:Math.sin(ts/700+g.ph)*5;
+      cx.fillStyle=g.c;cx.beginPath();cx.moveTo(g.x,gy+8);cx.lineTo(g.x+g.w/2+sw,gy+8-g.h);cx.lineTo(g.x+g.w,gy+8);cx.fill()});
+    if(!reduce||ts<50)requestAnimationFrame(frame);
+  }
+  size();addEventListener('resize',size);requestAnimationFrame(frame);
+  if(reduce)setTimeout(function(){requestAnimationFrame(frame)},60);
+})();
+</script>
+
+</body></html>
